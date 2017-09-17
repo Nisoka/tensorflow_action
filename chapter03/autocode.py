@@ -101,7 +101,7 @@ def get_random_block_from_data(data, batch_size):
     return data[start_index:start_index+batch_size]
 
 def mnist_autocoder_test():
-    mnist = input_data.read_data_sets('MNIST_data', one_hot = True)
+    mnist = input_data.read_data_sets('../MNIST_data', one_hot = True)
     X_train, X_test = standard_scale(mnist.train.images, mnist.test.images)
     n_samples = int(mnist.train.num_examples)
     training_epochs = 20
