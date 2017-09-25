@@ -1,6 +1,6 @@
-
 from tensorflow.examples.tutorials.mnist import input_data
 import tensorflow as tf
+
 mnist = input_data.read_data_sets("../MNIST_data/", one_hot = True)
 sess = tf.InteractiveSession()
 
@@ -15,7 +15,11 @@ b2 = tf.Variable(tf.zeros([10]))
 x = tf.placeholder(tf.float32, [None, in_units])
 keep_prob = tf.placeholder(tf.float32)
 
+# 激活函数 relu 梯度计算更好.
+# hidden_1 计算子图
 hidden_1 = tf.nn.relu(tf.matmul(x, W1) + b1)
+# drop_out 舍弃掉hidden_1中的一些神经元, 这样每次进行拟合梯度下降, 都会得到不同的神经网络
+# 最终得到一个取平均 得到一个最终的神经网络, 可以有效的防止过拟合。
 hidden_1_drop = tf.nn.dropout(hidden_1, keep_prob)
 
 y = tf.nn.softmax(tf.matmul(hidden_1_drop, W2) + b2)

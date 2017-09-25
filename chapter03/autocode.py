@@ -35,16 +35,20 @@ class AdditiveGaussianNoiseAutoencoder(object):
         network_weights = self._initialize_weights()
         self.weights = network_weights
 
+        #输入节点x
         self.x = tf.placeholder(tf.float32, [None, self.n_input])
-        self.hidden = self.transfer(tf.add(tf.matmul(
-            self.x + scale*tf.random_normal((n_input, )),
-            self.weights['w1']), self.weights['b1']))
-
+        #隐藏节点hidden = tf.nn.softplus( (x + scale*n_input)*W1 + b1 )
+        #scale*n_input 加高斯噪声, 让自编码器能够尽量抽取主成分PCA.
+        self.hidden = self.transfer(tf.add(tf.matmul(self.x + scale*tf.random_normal((n_input, )),
+                                                     self.weights['w1']),
+                                           self.weights['b1']))
+        #输出重建节点reconstruction = hidden*W2 + b2
         self.reconstruction = tf.add(tf.matmul(self.hidden,
-                                        self.weights['w2']), self.weights['b2'])
+                                               self.weights['w2']),
+                                     self.weights['b2'])
 
-        self.cost = 0.5*tf.reduce_sum(tf.pow(tf.subtract(
-            self.reconstruction, self.x), 2.0))
+        #cost = sum[(Y-X)^2]
+        self.cost = 0.5*tf.reduce_sum(tf.pow(tf.subtract(self.reconstruction, self.x), 2.0))
         self.optimizer = optimizer.minimize(self.cost)
 
         init = tf.global_variables_initializer()
